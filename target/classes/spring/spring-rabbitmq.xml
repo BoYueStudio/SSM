@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/rabbit
+        http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+    <!-- rabbitmq配置文件-->
+    <!--配置connection-factory，指定连接rabbit server参数 -->
+    
+     <!-- 配置rabbitmq的connection factory,由spring来实例化 -->
+    <rabbit:connection-factory id="connectionFactory"
+                               username="${rabbit.username}" password="${rabbit.password}" host="${rabbit.url}" port="${rabbit.port}"/>
+    <rabbit:admin connection-factory="connectionFactory"/>
+    <!-- 创建channel，不用直接创建 -->
+    <!-- 创建mq模板 并指定发送队列为延迟队列路由键
+     将来使用模板类，对指定连接工厂下的具体路由器(routing-key)
+    主要用于生产消息的,队列名:delay_queue  路由器的路由键:delay_queue
+    -->
+    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" queue="delay_queue"
+                     routing-key="delay_queue"/>
+    
+    <!-- 创建延迟队列，该队列将会过期
+    
+    -->	
+    <rabbit:queue name="delay_queue" auto-declare="true">
+    <!-- 定义队列参数: -->
+        <rabbit:queue-arguments>
+            <!-- 设置消息的存活时间  毫秒数-->
+            <entry key="x-message-ttl" value="60000" value-type="java.lang.Long"/>
+            <!-- 设置死信路由 -->
+            <entry key="x-dead-letter-exchange" value="dead_exchange"/>
+            <!-- 设置死信路由键 -->
+            <entry key="x-dead-letter-routing-key" value="task_queue"/>
+        </rabbit:queue-arguments>
+    </rabbit:queue>
+    <!-- 定义将来要被消费的队列  -->
+    
+    <!-- 消费者所获取的消息队列-->
+    <rabbit:queue name="task_queue" auto-declare="true" />
+    <!-- 配置死信路由-->
+    <rabbit:direct-exchange name="dead_exchange" durable="false" auto-delete="false" id="dead_exchange">
+        <!-- 死信理由绑定转发的队列-->
+        <rabbit:bindings>
+            <rabbit:binding queue="task_queue"/>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+    
+    <!-- 开启线程,作为rabbitmq的消费者-->
+    <!-- 自定义消息监听类，重写onmessage方法-->
+    <bean id="delayTask" class="com.oracle.rabbit.task.ConsumerOrders"/>
+    <!-- 配置监听容器-->
+    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="auto" task-executor="taskExecutor">
+        <!-- 指定监听队列 使用哪个监听类 定义了 收到消息之后的逻辑 ,来监听-->
+        <rabbit:listener queues="task_queue" ref="delayTask"/>
+    </rabbit:listener-container>
+
+<!-- 配置线程池 -->
+    <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <!-- 线程池维护线程的最少数量 -->
+        <property name="corePoolSize" value="5"/>
+        <!-- 线程池维护线程所允许的空闲时间 -->
+        <property name="keepAliveSeconds" value="30000"/>
+        <!-- 线程池维护线程的最大数量 -->
+        <property name="maxPoolSize" value="2000"/>
+        <!-- 线程池所使用的缓冲队列 -->
+        <property name="queueCapacity" value="20"/>
+    </bean>
+  
+</beans>

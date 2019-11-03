@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.oracle.ssm.mapper.OrdersGoodsRelationMapper" >
+  <resultMap id="BaseResultMap" type="com.oracle.ssm.model.OrdersGoodsRelation" >
+    <result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+    <result column="orders_id" property="ordersId" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="insert" parameterType="com.oracle.ssm.model.OrdersGoodsRelation" >
+    insert into orders_goods_relation (goods_id, orders_id)
+    values (#{goodsId,jdbcType=INTEGER}, #{ordersId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.oracle.ssm.model.OrdersGoodsRelation" >
+    insert into orders_goods_relation
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="goodsId != null" >
+        goods_id,
+      </if>
+      <if test="ordersId != null" >
+        orders_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="goodsId != null" >
+        #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="ordersId != null" >
+        #{ordersId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+</mapper>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.oracle.ssm.mapper.GoodsMapper" >
+  <resultMap id="BaseResultMap" type="com.oracle.ssm.model.Goods" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
+  </resultMap>
+  
+    <resultMap id="GoodsMap" type="com.oracle.ssm.vo.GoodsVo" >
+        <result column="avaliable_count" property="avaliableCount" jdbcType="INTEGER"/>
+  <result column="sale_price" property="salePrice" jdbcType="DECIMAL" />
+    <association property="goods" javaType="goods">
+         <id column="id" property="id" jdbcType="INTEGER" />
+   		 <result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+   		 <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+   		 <result column="img_url" property="imgUrl" jdbcType="VARCHAR" />   
+    </association>
+
+  </resultMap>
+  
+    <resultMap id="GoodsVoMap" type="com.oracle.ssm.vo.GoodsVo" >
+  <result column="sale_price" property="salePrice" jdbcType="DECIMAL" />
+    <association property="goods" javaType="goods">
+         <id column="id" property="id" jdbcType="INTEGER" />
+   		 <result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+   		 <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+   		 <result column="img_url" property="imgUrl" jdbcType="VARCHAR" />   
+    </association>
+
+  </resultMap>
+  
+  <resultMap id="ResultMapWithBLOBs" type="com.oracle.ssm.model.Goods" extends="BaseResultMap" >
+    <result column="goods_desc" property="goodsDesc" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, goods_name, update_time, img_url
+  </sql>
+  <sql id="Blob_Column_List" >
+    goods_desc
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from goods
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from goods
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.oracle.ssm.model.Goods" >
+    insert into goods (id, goods_name, update_time, 
+      img_url, goods_desc)
+    values (#{id,jdbcType=INTEGER}, #{goodsName,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{imgUrl,jdbcType=VARCHAR}, #{goodsDesc,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.oracle.ssm.model.Goods" >
+    insert into goods
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="goodsName != null" >
+        goods_name,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="imgUrl != null" >
+        img_url,
+      </if>
+      <if test="goodsDesc != null" >
+        goods_desc,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="goodsName != null" >
+        #{goodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="imgUrl != null" >
+        #{imgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsDesc != null" >
+        #{goodsDesc,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.oracle.ssm.model.Goods" >
+    update goods
+    <set >
+      <if test="goodsName != null" >
+        goods_name = #{goodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="imgUrl != null" >
+        img_url = #{imgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsDesc != null" >
+        goods_desc = #{goodsDesc,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.oracle.ssm.model.Goods" >
+    update goods
+    set goods_name = #{goodsName,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      img_url = #{imgUrl,jdbcType=VARCHAR},
+      goods_desc = #{goodsDesc,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.oracle.ssm.model.Goods" >
+    update goods
+    set goods_name = #{goodsName,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      img_url = #{imgUrl,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="findGoodsBySeachVo" parameterType="seachGoodsVo" resultMap="GoodsMap">
+
+SELECT id,goods_name,update_time,img_url,goods_desc,goods_price.sale_price,goods_store.avaliable_count FROM goods,goods_price,goods_store 
+      
+      <where>
+and  goods.id=goods_price.goods_id AND goods_price.goods_id=goods_store.goods_id
+          <if test="goodsName!=null and goodsName!=''">
+          and goods_name like '%${goodsName}%'
+          </if>
+          <if test="minPrice!=null and minPrice!=0">
+          and goods_price.sale_price &gt;= #{minPrice}
+          </if>
+          <if test="maxPrice!=null and minPrice!=0">
+          and goods_price.sale_price &lt;= #{maxPrice}
+          </if>
+          
+      </where>
+      order by goods_price.sale_price asc
+  </select>
+  
+    <select id="findGoodsById" parameterType="int" resultMap="BaseResultMap">
+      
+      select *from goods where id=#{id};
+  </select>
+  
+    <select id="findGoodsVoById" parameterType="int" resultMap="GoodsVoMap">
+        SELECT id,goods_name,update_time,img_url,goods_desc,goods_price.sale_price
+        FROM goods,goods_price
+ 		where goods.id=goods_price.goods_id and goods.id=#{id}
+    </select>
+  
+  
+</mapper>

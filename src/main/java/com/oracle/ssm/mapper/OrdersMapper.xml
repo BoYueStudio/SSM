@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.oracle.ssm.mapper.OrdersMapper" >
+   <resultMap id="ordersGoodsMap" type="com.oracle.ssm.model.Orders" >
+     <id column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="order_time" property="orderTime" jdbcType="TIMESTAMP" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+    <result column="orders_money" property="ordersMoney" jdbcType="VARCHAR" />
+    <result column="shop_count" property="shopCount" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="staus" property="staus" jdbcType="INTEGER" />
+    
+    <collection property="goodsList" ofType="goods">
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
+    </collection>
+  </resultMap>
+    
+  <resultMap id="BaseResultMap" type="com.oracle.ssm.model.Orders" >
+    <id column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="order_time" property="orderTime" jdbcType="TIMESTAMP" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+    <result column="orders_money" property="ordersMoney" jdbcType="VARCHAR" />
+    <result column="shop_count" property="shopCount" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="staus" property="staus" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    order_id, order_time, user_id, goods_id, orders_money, shop_count, update_time, staus
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from orders
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from orders
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.oracle.ssm.model.Orders" >
+    insert into orders (order_id, order_time, user_id, 
+      goods_id, orders_money, shop_count, 
+      update_time, staus)
+    values (#{orderId,jdbcType=INTEGER}, #{orderTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=INTEGER}, 
+      #{goodsId,jdbcType=INTEGER}, #{ordersMoney,jdbcType=VARCHAR}, #{shopCount,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{staus,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.oracle.ssm.model.Orders" >
+   <selectKey keyProperty="orderId" order="AFTER" resultType="int">
+       select last_insert_id();
+   </selectKey>
+      insert into orders
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orderId != null" >
+        order_id,
+      </if>
+      <if test="orderTime != null" >
+        order_time,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="goodsId != null" >
+        goods_id,
+      </if>
+      <if test="ordersMoney != null" >
+        orders_money,
+      </if>
+      <if test="shopCount != null" >
+        shop_count,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="staus != null" >
+        staus,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orderId != null" >
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="orderTime != null" >
+        #{orderTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsId != null" >
+        #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="ordersMoney != null" >
+        #{ordersMoney,jdbcType=VARCHAR},
+      </if>
+      <if test="shopCount != null" >
+        #{shopCount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="staus != null" >
+        #{staus,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.oracle.ssm.model.Orders" >
+    update orders
+    <set >
+      <if test="orderTime != null" >
+        order_time = #{orderTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsId != null" >
+        goods_id = #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="ordersMoney != null" >
+        orders_money = #{ordersMoney,jdbcType=VARCHAR},
+      </if>
+      <if test="shopCount != null" >
+        shop_count = #{shopCount,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="staus != null" >
+        staus = #{staus,jdbcType=INTEGER},
+      </if>
+    </set>
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.oracle.ssm.model.Orders" >
+    update orders
+    set order_time = #{orderTime,jdbcType=TIMESTAMP},
+      user_id = #{userId,jdbcType=INTEGER},
+      goods_id = #{goodsId,jdbcType=INTEGER},
+      orders_money = #{ordersMoney,jdbcType=VARCHAR},
+      shop_count = #{shopCount,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      staus = #{staus,jdbcType=INTEGER}
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </update>
+  
+  <insert id="insertOrders" parameterType="orders">
+	<selectKey order="AFTER" keyProperty="orderId" resultType="int">
+	    select last_insert_id()
+	</selectKey>
+      
+     insert into orders (order_time, user_id, 
+      goods_id, orders_money, shop_count, 
+      update_time, staus) value(
+      #{orderTime},#{userId},#{goodsId},#{ordersMoney},#{shopCount},#{updateTime},#{staus}
+      )
+      
+  </insert>
+  
+    <insert id="insertOrdersGoodsRelation" parameterType="OrdersGoodsRelation">
+  insert into orders_goods_relation values (#{goodsId},#{ordersId})
+  
+  </insert>
+  
+    <select id="findOrdersDetailById" parameterType="int" resultMap="ordersGoodsMap">
+    SELECT orders.*,goods.* FROM orders,orders_goods_relation,goods WHERE orders.`order_id`=orders_goods_relation.`orders_id`
+AND orders_goods_relation.`goods_id`=goods.`id` AND orders.`order_id`=#{id}
+ 
+        
+    </select>
+  
+</mapper>

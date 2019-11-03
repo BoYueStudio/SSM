@@ -1,0 +1,99 @@
+#middle {
+	height: 395px;
+	width: 1024px;
+	margin: 0 auto;
+	margin-top: 90px;
+	/*background: darksalmon;*/
+}
+
+
+/*----*/
+
+.middle_shang {
+	height: 45px;
+	width: 1024px;
+	border-bottom: 2px solid #ECECEC;
+	/*background: #D43F3A;*/
+}
+
+.middle_shang .middle_shang_1 {
+	height: 45px;
+	float: left;
+}
+
+.middle_shang a {
+	border-right: 1px solid #ECECEC;
+	float: left;
+	font-size: 16px;
+	font-weight: bold;
+	color: black;
+	padding: 0px 20px;
+	margin-top: 10px;
+	text-decoration: none;
+	margin-bottom: 20px;
+}
+
+
+/*----*/
+
+.middle_zhong {
+	height: 46px;
+	width: 1024px;
+	margin-top: 20px;
+	text-align: center;
+	border: solid 1px #ECECEC;
+	font: normal 12px "微软雅黑";
+	background: #F5F5F5;
+}
+
+.middle_zhong td {
+	height: 48px;
+}
+
+
+/*----*/
+
+.middle_xia {}
+
+.middle_xia table {
+	border: 2px solid #ECECEC;
+	width: 1024px;
+	margin: 20px 0px;
+}
+
+.middle_xia table td {
+	font-size: 12px;
+	padding: 8px 10px;
+}
+
+.middle_xia a {
+	color: gray;
+}
+
+.middle_xia a:hover {
+	text-decoration: none;
+	color: darkred;
+}
+
+.middle_xia .tab_pic {
+	position: relative;
+	padding: 5px;
+	height: 80px;
+	font-size: 12px;
+}
+
+.middle_xia .tab_pic .tab_pic_1 {
+	margin-top: 35px;
+}
+
+.middle_xia .tab_price {
+	color: #999999;
+	font-size: 14px;
+	text-align: center;
+}
+
+.middle_xia .tab_price2 {
+	font-size: 14px;
+	text-align: center;
+}
+
