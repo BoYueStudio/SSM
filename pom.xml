@@ -7,7 +7,7 @@
   
   <properties>
 		<spring.version>4.3.8.RELEASE</spring.version>
-		<mybatis.version>3.4.6</mybatis.version>
+		<mybatis.version>3.5.6</mybatis.version>
 	</properties>
 	
 	<dependencies>
